@@ -18,10 +18,10 @@ This image does not contain a compiler, etc. The best way to install C-based gem
 For example,  if you are using the `pg` and `nokogiri` gems:
 
 ``` Dockerfile
-BUILD_DEPS="build-dependencies build-base ruby-dev libc-dev linux-headers \
-    openssl-dev postgresql-dev libxml2-dev libxslt-dev"
-RUN apk --update add --virtual  $BUILD_DEPS && \
+RUN apk --update add --virtual build_deps \
+    build-base ruby-dev libc-dev linux-headers \
+    openssl-dev postgresql-dev libxml2-dev libxslt-dev && \
     sudo -iu app bundle config build.nokogiri --use-system-libraries && \
     sudo -iu app bundle install --path vendor/bundle && \
-    apk del $BUILD_DEPS && unset BUILD_DEPS
+    apk del  build_deps
 ```
