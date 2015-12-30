@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:3.3
 
 RUN apk update && apk upgrade && apk --update add \
     ruby ruby-irb ruby-rake ruby-io-console ruby-bigdecimal \
