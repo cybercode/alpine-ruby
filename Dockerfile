@@ -9,7 +9,10 @@ RUN apk --update add --virtual build_deps \
     linux-headers zlib-dev readline-dev yaml-dev git \
     && cd /tmp && git clone https://github.com/rbenv/ruby-build.git \
     && cd ruby-build && ./install.sh \
-    && ruby-build $RUBY_VERSION /usr/local \
+    && ac_cv_func_isnan=yes ac_cv_func_isinf=yes \
+       CONFIGURE_OPTS="--enable-pthread --disable-rpath --enable-shared" \
+       RUBY_CFLAGS="-fno-omit-frame-pointer -fno-strict-aliasing" \
+       ruby-build -v $RUBY_VERSION /usr/local \
     && rm -rf /tmp/* /usr/local/bin/ruby-build /usr/local/share/* \
         /usr/local/lib/libruby-static.a \
     && apk del build_deps && rm /var/cache/apk/*
