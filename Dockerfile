@@ -1,5 +1,5 @@
 FROM alpine:3.3
-ENV RUBY_VERSION=2.3.0
+ENV RUBY_VERSION=2.3.1
 
 RUN apk update && apk upgrade && apk --update add gmp yaml tzdata bash
 
