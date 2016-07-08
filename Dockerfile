@@ -1,7 +1,7 @@
 FROM alpine:3.3
 ENV RUBY_VERSION=2.3.1
 
-RUN apk update && apk upgrade && apk --update add gmp yaml tzdata bash
+RUN apk update && apk upgrade && apk add gmp yaml tzdata bash
 
 # add compilation env, build ruby and cleanup
 RUN apk --update add --virtual build_deps \
@@ -12,15 +12,15 @@ RUN apk --update add --virtual build_deps \
     && ac_cv_func_isnan=yes ac_cv_func_isinf=yes \
        CONFIGURE_OPTS="--enable-pthread --disable-rpath --enable-shared" \
        RUBY_CFLAGS="-fno-omit-frame-pointer -fno-strict-aliasing" \
+       RUBY_CONFIGURE_OPTS=--disable-install-doc \
        ruby-build -v $RUBY_VERSION /usr/local \
+    && cd .. \
     && rm -rf /tmp/* /usr/local/bin/ruby-build /usr/local/share/* \
         /usr/local/lib/libruby-static.a \
+    && mkdir -p /usr/local/etc && echo 'gem: --no-document' >/usr/local/etc/gemrc \
+    && gem update --system && gem update && gem clean && gem install bundler \
+    && rm -rf /root/.gem \
+    && find / -name '*.gem' | xargs rm -f \
     && apk del build_deps && rm /var/cache/apk/*
-
-RUN echo 'gem: --no-rdoc --no-ri' >/etc/gemrc
-
-RUN gem install bundler \
-    && rm -r /root/.gem \
-    && find / -name '*.gem' | xargs rm
 
 CMD ["irb"]
